@@ -1,4 +1,5 @@
 import argparse
+import hashlib
 
 DEBUG = False
 
@@ -13,6 +14,18 @@ def debug_print(msg):
     if DEBUG:
         print('\033[33m[+]\033[0m', msg)
 
+def crypto(check, input_data):
+    number = 0
+    done = False
+    while not done:
+        number += 1
+        string = input_data + str(number)
+        md5 = hashlib.md5(string.encode())
+        debug_print(string + " - " + str(md5.hexdigest()))
+        if md5.hexdigest()[:check] == "0" * check:
+            done = True
+
+    return number
 
 def main():
     global DEBUG
@@ -32,14 +45,15 @@ def main():
     # Read input file if --input flag is set
     if args.input_file:
         with open(args.input_file, 'r') as f:
-            input_data = f.read()
+            input_data = f.read().strip()
         debug_print(f'Read input from {args.input_file}: {input_data}')
 
 
     # CODE REST OF PROBLEM MAINLOOP HERE
-    data = parse_input(input_data) # Customize to problem
+    # data = parse_input(input_data) # Customize to problem
 
-
+    print("part1:",crypto(5,input_data))
+    print("part2:",crypto(6,input_data))
 
 
 if __name__ == '__main__':
