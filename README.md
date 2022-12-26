@@ -23,3 +23,5 @@ I plan to write a wrapper script to be placed here in the root directory which c
 - Write to allow positional parameters for file input
 - For python at least, code to allow inclusion as a library. (i.e. __name__ == "__main__")
 - over-comment as necessary.
+
+FYI - I started in 2022, so that year will have the biggest discrepancies away from this design.

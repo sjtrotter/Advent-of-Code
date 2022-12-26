@@ -35,7 +35,7 @@ def main():
         DEBUG = True
         debug_print('Debug mode enabled')
 
-    # Print debug messages if --force flag is set
+    # Overwrite files if --force flag is set
     if args.force:
         FORCE = True
         debug_print('Forcing overwrites')
@@ -46,7 +46,7 @@ def main():
     else:
         year = [str(date.today().year)]
 
-    # Check for year directory, exit if found
+    # Check for year directory, exit if found (if not forcing)
     for y in year:
         if os.path.exists(y) and not FORCE:
             error_print(y+" year directory already exists - exiting.")

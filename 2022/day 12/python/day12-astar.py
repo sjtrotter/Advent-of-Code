@@ -7,7 +7,8 @@ def aStarAlgo(start_node, stop_node):
 
 
     # print(start_node)
-    open_set = { start_node }
+    open_set = set()
+    open_set.add(start_node)
     closed_set = set()
     g = {}
     parents = {}
