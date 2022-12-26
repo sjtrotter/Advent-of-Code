@@ -65,7 +65,7 @@ def main():
     # totalrounds = 10
     # for rounds in range(totalrounds):
 
-    # for until moves == 0
+    # for until moves == 0 (part2)
     stop = False
     rounds = 0
     while not stop:

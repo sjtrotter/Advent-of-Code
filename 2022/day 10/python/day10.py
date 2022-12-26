@@ -1,46 +1,52 @@
-import argparse
+#!/usr/bin/env python
 
-DEBUG = False
+inputfile = open("input.txt", "r")
+data = inputfile.readlines()
+inputfile.close()
 
-def parse_input(input_data):
-    # DEFINE CUSTOM PARSING HERE
-    ...
+data_list = []
+for line in data:
+    data_list.append(line.strip())
+
+X = 1
+cycle = 0
+cmdReady = 1
+adding = 0
+cmd = 0
+magicCycles = {}
+for i in range(20, 240, 40):
+    magicCycles[i] = 0
+magicIndex = 20
+
+while cycle < 220:
+    cycle += 1
+    if cmdReady == 0:
+        adding = 1
+    if cmdReady == 1:
+        command = data_list[cmd].split(" ")
+        # print(cycle, command)
+        if command[0] == "addx":
+            cmdReady = 0
+            value = int(command[1])
+        elif command[0] == "noop":
+            cmdReady = 1
+        else:
+            print("error: bad input")
+            exit()
+        cmd += 1
+    else:
+        pass
+        # print(cycle)
+
+    if cycle == magicIndex:
+        magicCycles[cycle] = cycle * X
+        magicIndex += 40
+
+    if adding == 1:
+        X += value
+        adding = 0
+        cmdReady = 1
 
 
-def debug_print(msg):
-    # Use ANSI escape codes to set the text color to yellow
-    global DEBUG
-    if DEBUG:
-        print('\033[33m[+]\033[0m', msg)
-
-
-def main():
-    global DEBUG
-    # Set up argument parser
-    parser = argparse.ArgumentParser(description='Process some input.')
-    parser.add_argument('--debug', action='store_true', help='enable debug messages')
-    parser.add_argument('input_file', help='input file')
-    
-    # Parse command-line arguments
-    args = parser.parse_args()
-    
-    # Print debug messages if --debug flag is set
-    if args.debug:
-        DEBUG = True
-        debug_print('Debug mode enabled')
-    
-    # Read input file if --input flag is set
-    if args.input_file:
-        with open(args.input_file, 'r') as f:
-            input_data = f.read()
-        debug_print(f'Read input from {args.input_file}: {input_data}')
-
-
-    # CODE REST OF PROBLEM MAINLOOP HERE
-    data = parse_input(input_data) # Customize to problem
-
-
-
-
-if __name__ == '__main__':
-    main()
+print(magicCycles)
+print(sum(magicCycles.values()))

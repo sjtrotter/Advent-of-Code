@@ -1,46 +1,138 @@
-import argparse
-
-DEBUG = False
-
-def parse_input(input_data):
-    # DEFINE CUSTOM PARSING HERE
-    ...
+#!/usr/bin/env python
+import gmpy2
+from gmpy2 import mpz,f_mod,add,mul,div
 
 
-def debug_print(msg):
-    # Use ANSI escape codes to set the text color to yellow
-    global DEBUG
-    if DEBUG:
-        print('\033[33m[+]\033[0m', msg)
+inputfile = open("input.txt", "r")
+data = inputfile.readlines()
+inputfile.close()
+
+data_list = []
+for line in data:
+    data_list.append(line.strip())
+
+class Monkey():
+
+    def __init__(self, items, operation, operand, test, true, false):
+
+        self.items = items
+        self.operation = operation
+        self.operand = operand
+        self.test = mpz(test)
+        self.true = true
+        self.false = false
+        self.inspected = 0
 
 
-def main():
-    global DEBUG
-    # Set up argument parser
-    parser = argparse.ArgumentParser(description='Process some input.')
-    parser.add_argument('--debug', action='store_true', help='enable debug messages')
-    parser.add_argument('input_file', help='input file')
-    
-    # Parse command-line arguments
-    args = parser.parse_args()
-    
-    # Print debug messages if --debug flag is set
-    if args.debug:
-        DEBUG = True
-        debug_print('Debug mode enabled')
-    
-    # Read input file if --input flag is set
-    if args.input_file:
-        with open(args.input_file, 'r') as f:
-            input_data = f.read()
-        debug_print(f'Read input from {args.input_file}: {input_data}')
+    def inspect(self,item):
+        # print("inspecting",item)
+        self.inspected += 1
+        item = self.oper(item)
+        # item = int(item / 3)
+        if self.testItem(item):
+            self.throw(item, self.true)
+            # print("throwing to",self.true)
+        else:
+            self.throw(item, self.false)
+            # print("throwing to",self.false)
+        
+
+    def testItem(self, item):
+        # if item % self.test == 0:
+            # print("item",item,"is divisible by", self.test)
+        # else:
+            # print("item",item,"is not divisible by", self.test)
+        return (f_mod(item,self.test) == 0)
 
 
-    # CODE REST OF PROBLEM MAINLOOP HERE
-    data = parse_input(input_data) # Customize to problem
+    def throw(self, item, monkey):
+        monkeys[monkey].catch(item)
+
+
+    def catch(self, item):
+        self.items.append(item)
+
+
+    def oper(self, item):
+        if self.operand == "old":
+            operand = item
+        else:
+            operand = int(self.operand)
+        
+        if self.operation == "+":
+            return add(item,operand)
+        elif self.operation == "*":
+            return mul(item,operand)
+        else:
+            print("error:",self,"operation is neither + nor *")
+            exit()
 
 
 
+monkeys = {}
+monkeydata = {}
+currentMonkey = 0
+for line in data_list:
+    if line.startswith("Monkey"):
+        currentMonkey = line.split(":")[0].split(" ")[1]
+        monkeydata[currentMonkey] = []
+        # print(monkeyNumber)
+    elif line.startswith("Starting"):
+        newline = line.split(":")[1]
+        itemlist = newline.split(",")
+        for i in range(len(itemlist)):
+            itemlist[i] = mpz(itemlist[i])
+        monkeydata[currentMonkey].append(itemlist)
+    elif line.startswith("Operation"):
+        newline = line.split("=")[1]
+        if "+" in newline:
+            monkeydata[currentMonkey].append("+")
+            monkeydata[currentMonkey].append(newline.split("+")[1].strip())
+        elif "*" in newline:
+            monkeydata[currentMonkey].append("*")
+            monkeydata[currentMonkey].append(newline.split("*")[1].strip())
+    elif line.startswith("Test"):
+        monkeydata[currentMonkey].append(line.split(" ")[-1])
+    elif line.startswith("If"):
+        monkeydata[currentMonkey].append(line.split(" ")[-1])
 
-if __name__ == '__main__':
-    main()
+# print(monkeydata)
+
+
+for monkey in monkeydata.keys():
+    monkeys[monkey] = Monkey(monkeydata[monkey][0],monkeydata[monkey][1], \
+        monkeydata[monkey][2],monkeydata[monkey][3],monkeydata[monkey][4], \
+            monkeydata[monkey][5])
+
+# print(monkeys)
+
+
+monkeyRound = 0
+while monkeyRound < 10000:
+    # for monkey in monkeys.keys():
+        # print("Monkey", monkey,":",monkeys[monkey].items)
+    monkeyRound += 1
+    print(monkeyRound)
+    for monkey in monkeys.keys():
+        theItems = monkeys[monkey].items
+        monkeys[monkey].items = []
+        for item in theItems:
+            monkeys[monkey].inspect(item)
+
+
+# for monkey in monkeys.keys():
+#     print("Monkey", monkey,":",monkeys[monkey].items)
+
+inspectScores = []
+for monkey in monkeys.keys():
+    inspectScores.append(monkeys[monkey].inspected)
+
+print(inspectScores)
+
+inspectScores.sort()
+
+print("part1:", inspectScores[-1] * inspectScores[-2])
+
+
+# monkey0 = Monkey([79,98],"*",19,"/",23,2,3)
+

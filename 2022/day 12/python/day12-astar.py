@@ -69,7 +69,7 @@ def heuristic(a):
     return h
 
 
-inputfile = open("input.txt", "r")
+inputfile = open("../input.txt", "r")
 data = inputfile.readlines()
 inputfile.close()
 

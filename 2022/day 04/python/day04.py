@@ -1,46 +1,63 @@
-import argparse
+#!/usr/bin/python
 
-DEBUG = False
+inputfile = open("input.txt", "r")
+data = inputfile.readlines()
+inputfile.close()
 
-def parse_input(input_data):
-    # DEFINE CUSTOM PARSING HERE
-    ...
-
-
-def debug_print(msg):
-    # Use ANSI escape codes to set the text color to yellow
-    global DEBUG
-    if DEBUG:
-        print('\033[33m[+]\033[0m', msg)
+data_list = []
+for line in data:
+    data_list.append(line.strip())
 
 
-def main():
-    global DEBUG
-    # Set up argument parser
-    parser = argparse.ArgumentParser(description='Process some input.')
-    parser.add_argument('--debug', action='store_true', help='enable debug messages')
-    parser.add_argument('input_file', help='input file')
-    
-    # Parse command-line arguments
-    args = parser.parse_args()
-    
-    # Print debug messages if --debug flag is set
-    if args.debug:
-        DEBUG = True
-        debug_print('Debug mode enabled')
-    
-    # Read input file if --input flag is set
-    if args.input_file:
-        with open(args.input_file, 'r') as f:
-            input_data = f.read()
-        debug_print(f'Read input from {args.input_file}: {input_data}')
+doubleduties = 0
+overlappies = 0
+for line in data_list:
+    half1, half2 = line.split(',')
+    start1, stop1 = half1.split('-')
+    start2, stop2 = half2.split('-')
+    start1 = int(start1)
+    start2 = int(start2)
+    # stop1 = int(stop1) +1
+    # stop2 = int(stop2) +1
+    stop1 = int(stop1)
+    stop2 = int(stop2)
+    # elf1 = ''
+    # elf2 = ''
 
+    if (start1 <= start2 and stop1 >= stop2) or  (start2 <= start1 and stop2 >= stop1):
+            # print("elf2 (", half2, ") is inside elf1:", half1)
+            doubleduties += 1
+    #         continue
+    # elif start2 <= start1 and stop2 >= stop1:
+    #         print("elf1 (", half1, ") is inside elf2:", half2)
+    #         doubleduties += 1
+    #         continue
 
-    # CODE REST OF PROBLEM MAINLOOP HERE
-    data = parse_input(input_data) # Customize to problem
+    if start1 in range(start2, stop2+1) or stop1 in range(start2, stop2+1):
+        overlappies += 1
+        continue
 
+    if start2 in range(start1, stop1+1) or stop2 in range(start1, stop1+1):
+        overlappies += 1
 
+    # for i in range(start1, stop1):
+    #     elf1 += str(i)
+    # for i in range(start2, stop2):
+    #     elf2 += str(i)
+    # print(elf1)
+#     print("line:", line)
+#     print("half1:", half1)
+#     print("half2:", half2)
+#     print("start1", start1)
+#     print("start2", start2)
+#     print("stop1", stop1)
+#     print("stop2", stop2)
+#     range1 = ''.join(range(start1, stop1))
+#     range2 = ''.join(range(start2, stop2))
+    # if elf1 in elf2 or elf2 in elf1:
+    #     doubleduties += 1
+    #     print("elf1:", half1, start1, stop1, elf1)
+    #     print("elf2:", half2, start2, stop2, elf2)
 
-
-if __name__ == '__main__':
-    main()
+print(doubleduties)
+print(overlappies)

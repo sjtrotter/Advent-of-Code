@@ -1,46 +1,73 @@
-import argparse
+#!/usr/bin/env python
 
-DEBUG = False
+elf = { "A": "rock",
+        "B": "paper",
+        "C": "scissors" }
 
-def parse_input(input_data):
-    # DEFINE CUSTOM PARSING HERE
-    ...
+you = { "X": "lose",
+        "Y": "draw",
+        "Z": "win" }
 
+def win(elf, you):
+    result = ""
+    if (elf == "rock"):
+        if (you == "draw"):
+            result = "rock"
+        elif (you == "win"):
+            result = "paper"
+        elif (you == "lose"):
+            result = "scissors"
+    elif (elf == "paper"):
+        if (you == "lose"):
+            result = "rock"
+        elif (you == "draw"):
+            result = "paper"
+        elif (you == "win"):
+            result = "scissors"
+    elif (elf == "scissors"):
+        if (you == "win"):
+            result = "rock"
+        elif (you == "lose"):
+            result = "paper"
+        elif (you == "draw"):
+            result = "scissors"
+    return result
 
-def debug_print(msg):
-    # Use ANSI escape codes to set the text color to yellow
-    global DEBUG
-    if DEBUG:
-        print('\033[33m[+]\033[0m', msg)
-
-
-def main():
-    global DEBUG
-    # Set up argument parser
-    parser = argparse.ArgumentParser(description='Process some input.')
-    parser.add_argument('--debug', action='store_true', help='enable debug messages')
-    parser.add_argument('input_file', help='input file')
+def svalue(shape):
+    if (shape == "rock"):
+        return 1
+    elif (shape == "paper"):
+        return 2
+    elif (shape == "scissors"):
+        return 3
     
-    # Parse command-line arguments
-    args = parser.parse_args()
-    
-    # Print debug messages if --debug flag is set
-    if args.debug:
-        DEBUG = True
-        debug_print('Debug mode enabled')
-    
-    # Read input file if --input flag is set
-    if args.input_file:
-        with open(args.input_file, 'r') as f:
-            input_data = f.read()
-        debug_print(f'Read input from {args.input_file}: {input_data}')
+def wvalue(result):
+    if (result == "draw"):
+        return 3
+    elif (result == "lose"):
+        return 0
+    elif (result == "win"):
+        return 6
 
+inputfile = open("input.txt", "r")
+data = inputfile.readlines()
+inputfile.close()
 
-    # CODE REST OF PROBLEM MAINLOOP HERE
-    data = parse_input(input_data) # Customize to problem
+data_list = []
+for line in data:
+    data_list.append(line.strip())
 
+results = []
+for line in data_list:
+    a, b = line.split(" ")
+    a = elf[a]
+    b = you[b]
+    shape = win(a, b)
+    winvalue = wvalue(b)
+    shapevalue = svalue(shape)
+    # print("winvalue", winvalue)
+    # print("shapevalue", shapevalue)
+    results.append(winvalue + shapevalue)
 
-
-
-if __name__ == '__main__':
-    main()
+print(results)
+print(sum(results))

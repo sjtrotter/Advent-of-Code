@@ -1,46 +1,142 @@
-import argparse
+#!/usr/bin/env python
 
-DEBUG = False
+inputfile = open("input.txt", "r")
+data = inputfile.readlines()
+inputfile.close()
 
-def parse_input(input_data):
-    # DEFINE CUSTOM PARSING HERE
-    ...
+data_list = []
+for line in data:
+    data_list.append(line.strip())
 
+dirs = {}
+files = {}
+curdir = []
+for line in data_list:
 
-def debug_print(msg):
-    # Use ANSI escape codes to set the text color to yellow
-    global DEBUG
-    if DEBUG:
-        print('\033[33m[+]\033[0m', msg)
+    exploded = line.split(' ')
+    if exploded[0] == "$":
+        if exploded[1] == "cd":
 
+            if exploded[2] == "..":
+                # dirsizes[lastdir] += dirsizes[curdir]
+                curdir.pop()
+            else:
+                curdir.append(exploded[2])
 
-def main():
-    global DEBUG
-    # Set up argument parser
-    parser = argparse.ArgumentParser(description='Process some input.')
-    parser.add_argument('--debug', action='store_true', help='enable debug messages')
-    parser.add_argument('input_file', help='input file')
+            if not '/'.join(curdir) in dirs.keys():
+                dirs['/'.join(curdir)] = []
     
-    # Parse command-line arguments
-    args = parser.parse_args()
+    else:
+        # print(line)
+        # print(exploded)
+        if exploded[0] == "dir":
+            dirs['/'.join(curdir)].append('/'.join(curdir) + '/' + exploded[1])
+        else:
+            dirs['/'.join(curdir)].append(exploded[1])
+        if exploded[0].isnumeric():
+            files[exploded[1]] = int(exploded[0])
+            
+
+
+# print(dirs)
+# print(files)
+count = 0
+for key in dirs.keys():
+    count += 1
+    print(count, key, dirs[key])
+
+
+def calculate(dir, name):
+    size = 0
+    # print("calculating", name)
+    done = True
+    dirs = 0
+    for file in dir:
+        # print("... checking", file)
+        if file in files.keys():
+            # print("...", file, "in files, adding...")
+            size += files[file]
+        elif name+file in files.keys():
+            size += files[name+file]
+        else:
+            # print("...", file, "not in files, keeping on going...")
+            dirs += 1
+            done = False
+    if dirs == len(dir):
+        done = True
+    if done == True:
+        # print("dir", name, "done, adding to files...")
+        files[name] = size
     
-    # Print debug messages if --debug flag is set
-    if args.debug:
-        DEBUG = True
-        debug_print('Debug mode enabled')
+    return size
+
+
+
+
+
+
+# def calculate(dir): # recursion depth is too large for full dataset
+#     size = 0
+#     for file in dir:
+#         if file in dirs.keys():
+#             try:
+#                 size += calculate(dirs[file])
+#             except:
+#                 pass
+#         else:
+#             size += files[file]
+#     return size
+
+
+
+
+
+
+
+sizes = {}
+length = len(dirs.keys())
+dirsdone = 0
+
+while dirsdone < length:
+        
+    for dir in dirs.keys():
+        if not dir in files.keys():
+            print(dir, "still not in files")
+            sizes[dir] = calculate(dirs[dir], dir)
+        else:
+            print("in files:",dir, files[dir])
+
+    dirsdone = 0
+    for dir in dirs.keys():
+        # print("number of dirs:", length)
+        if dir in files.keys():
+            dirsdone += 1
+        # print("dirs done:", dirsdone)
     
-    # Read input file if --input flag is set
-    if args.input_file:
-        with open(args.input_file, 'r') as f:
-            input_data = f.read()
-        debug_print(f'Read input from {args.input_file}: {input_data}')
+    # if dirsdone == 107:
+    #     count = 0
+    #     for key in dirs.keys():
+    #         count += 1
+    #         print(count, key)
+    #     count = 0
+    #     for key in files.keys():
+    #         count += 1
+    #         print(count, key)
+    #     exit()
 
 
-    # CODE REST OF PROBLEM MAINLOOP HERE
-    data = parse_input(input_data) # Customize to problem
+    print(dirsdone, "dirs done of", length)
+    
+print(sizes)
+
+total = 0
+for dir in sizes:
+    if sizes[dir] <= 100000:
+        total += sizes[dir]
+        print(dir,sizes[dir])
+
+print(total)
 
 
-
-
-if __name__ == '__main__':
-    main()
+# for key in dirmap.keys():
+#     print(key, dirmap[key])

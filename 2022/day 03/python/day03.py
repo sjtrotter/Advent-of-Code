@@ -1,46 +1,48 @@
-import argparse
+#!/usr/bin/env python
 
-DEBUG = False
+lettervalues = {}
 
-def parse_input(input_data):
-    # DEFINE CUSTOM PARSING HERE
-    ...
+theletters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", \
+            "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", \
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", \
+            "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
+value = 1
+for letter in theletters:
+    lettervalues[letter] = value
+    value += 1
 
-def debug_print(msg):
-    # Use ANSI escape codes to set the text color to yellow
-    global DEBUG
-    if DEBUG:
-        print('\033[33m[+]\033[0m', msg)
+# print(lettervalues)
+# exit()
 
+inputfile = open("input.txt", "r")
+data = inputfile.readlines()
+inputfile.close()
 
-def main():
-    global DEBUG
-    # Set up argument parser
-    parser = argparse.ArgumentParser(description='Process some input.')
-    parser.add_argument('--debug', action='store_true', help='enable debug messages')
-    parser.add_argument('input_file', help='input file')
-    
-    # Parse command-line arguments
-    args = parser.parse_args()
-    
-    # Print debug messages if --debug flag is set
-    if args.debug:
-        DEBUG = True
-        debug_print('Debug mode enabled')
-    
-    # Read input file if --input flag is set
-    if args.input_file:
-        with open(args.input_file, 'r') as f:
-            input_data = f.read()
-        debug_print(f'Read input from {args.input_file}: {input_data}')
+data_list = []
+for line in data:
+    data_list.append(line.strip())
 
+values =[]
+marker = 0
+elfgroup = {}
+for line in data_list:
+    # half1 = line[:int(len(line)/2)] # for pt1
+    # half2 = line[int(len(line)/2):] # for pt1
+    elfgroup[marker] = line
 
-    # CODE REST OF PROBLEM MAINLOOP HERE
-    data = parse_input(input_data) # Customize to problem
+    if (marker == 2):
+        for letter in elfgroup[0]:
+            if (letter in elfgroup[1] and letter in elfgroup[2]):
+                values.append(lettervalues[letter])
+                break
+    # for letter in half1: # for pt1
+    #     if (letter in half2):
+    #         # print(letter, lettervalues[letter])
+    #         values.append(lettervalues[letter])
+    #         break
+    marker += 1
+    if marker == 3: marker = 0
 
-
-
-
-if __name__ == '__main__':
-    main()
+print(values)
+print(sum(values))
