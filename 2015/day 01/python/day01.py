@@ -14,6 +14,13 @@ def debug_print(msg):
         print('\033[33m[+]\033[0m', msg)
 
 
+def upOrDown(instr):
+    if instr == "(":
+        return 1
+    elif instr == ")":
+        return -1
+
+
 def main():
     global DEBUG
     # Set up argument parser
@@ -37,7 +44,24 @@ def main():
 
 
     # CODE REST OF PROBLEM MAINLOOP HERE
-    data = parse_input(input_data) # Customize to problem
+    # data = parse_input(input_data) # Customize to problem
+
+
+
+    floor = 0
+    for instr in input_data:
+        floor += upOrDown(instr)
+
+    print("part1:",floor)
+
+    floor = 0
+    for index in range(1,len(input_data)+1):
+        debug_print(str(index-1)+" - "+input_data[index-1]+"floor "+str(floor))
+        floor += upOrDown(input_data[index-1])
+        if floor < 0:
+            break
+    
+    print("part2:",index)
 
 
 
