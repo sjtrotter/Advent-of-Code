@@ -1,0 +1,17 @@
+# https://www.reddit.com/r/adventofcode/comments/3v3w2f/comment/cxk4a6i/?utm_source=share&utm_medium=web2x&context=3
+
+
+def day2_2():
+    total = 0
+    for line in open('../input.txt'):
+        l, w, h = line.split('x')
+        l, w, h = int(l), int(w), int(h)
+        ribbon = 2 * min(l+w, w+h, h+l)
+        bow = l*w*h
+        total += ribbon + bow
+    print (total)
+
+day2_2()
+
+
+# I forgot that in mine, x,y,z are the areas :(
