@@ -4,10 +4,9 @@ DEBUG = False
 
 def parse_input(input_data):
     # DEFINE CUSTOM PARSING HERE
-    strings = [line.strip() for line in input_data.split('\n')]
-    rstrings = [fr"{line.strip()}" for line in input_data.split('\n')]
+    strings = [line.strip('"') for line in input_data.split('\n')]
 
-    return strings, rstrings
+    return strings
 
 def debug_print(msg):
     # Use ANSI escape codes to set the text color to yellow
@@ -39,17 +38,26 @@ def main():
 
 
     # CODE REST OF PROBLEM MAINLOOP HERE
-    strings,rstrings = parse_input(input_data) # Customize to problem
+    strings = parse_input(input_data)
 
     memorySize = 0
     codeSize = 0
-    for i in range(len(strings)):
-        debug_print("string: "+strings[i]+", "+str(len(strings[i]))+" - rstring: "+rstrings[i]+", "+str(len(strings[i])))
-        memorySize += len(strings[i]) - 2
-        codeSize += len(rstrings[i]) + 2
+    for s in strings:
+        # Parse the string as a regular string
+        regular_length = len(s)
+        print(f"Length of regular string '{s}': {regular_length}")
+
+        # Parse the string as a raw string
+        raw_length = len(r"{s}")
+        print(f"Length of raw string '{s}': {raw_length}\n")
+        
+        memorySize += regular_length
+        codeSize += raw_length
 
     debug_print(str(codeSize)+" - "+str(memorySize))
     print("part1:",codeSize-memorySize)
+    
+
 
 if __name__ == '__main__':
     main()
