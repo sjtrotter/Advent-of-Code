@@ -1,10 +1,15 @@
 import argparse
+import json
+
+# got some help from reddit for this:
+# https://www.reddit.com/r/adventofcode/comments/3wh73d/comment/cxw7ogw/?utm_source=share&utm_medium=web2x&context=3
+# https://www.reddit.com/r/adventofcode/comments/3wh73d/comment/cy0zvlc/?utm_source=share&utm_medium=web2x&context=3
 
 DEBUG = False
 
 def parse_input(input_data):
     # DEFINE CUSTOM PARSING HERE
-    ...
+    return json.loads(input_data)
 
 
 def debug_print(msg):
@@ -12,6 +17,36 @@ def debug_print(msg):
     global DEBUG
     if DEBUG:
         print('\033[33m[+]\033[0m', msg)
+
+
+def sum_numbers(obj):
+    if type(obj) == type(dict()):
+        return sum(map(sum_numbers, obj.values()))
+
+    if type(obj) == type(list()):
+        return sum(map(sum_numbers, obj))
+
+    if type(obj) == type(0):
+        return obj
+
+    return 0
+
+def sumObject(obj):
+    if type(obj) is int:
+        return obj
+    
+    if type(obj) is list:
+        return sum(map(sumObject, obj))
+    
+    if type(obj) is dict:
+        vals = obj.values()
+        if "red" in vals:
+            return 0
+        
+        return sum(map(sumObject, vals))
+    
+    else:
+        return 0
 
 
 def main():
@@ -39,8 +74,15 @@ def main():
     # CODE REST OF PROBLEM MAINLOOP HERE
     data = parse_input(input_data) # Customize to problem
 
+    debug_print(data)
+    debug_print(type(data))
+    sum = sum_numbers(data)
 
+    print("part1:",sum)
 
+    sum = sumObject(data)
+
+    print("part2:",sum)
 
 if __name__ == '__main__':
     main()
