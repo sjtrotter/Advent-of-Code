@@ -1,10 +1,33 @@
+"""
+Chat GPT's first solution didn't work, so I started parsing data.
+I restarted Chat GPT after, and gave it the input, which it was able to solve with.
+"""
+
 import argparse
 
 DEBUG = False
 
 def parse_input(input_data):
     # DEFINE CUSTOM PARSING HERE
-    ...
+    data = input_data.strip("\n").split("\n")
+    ingredients = {}
+    for line in data:
+        ingredient, _, capacity, _, durability, _, flavor, _, texture, _, calories = line.split()
+        ingredient = ingredient.strip(":")
+        durability = int(durability.strip(","))
+        flavor = int(flavor.strip(","))
+        texture = int(texture.strip(","))
+        calories = int(calories.strip(","))
+
+        ingredients[ingredient] = {
+            "capacity": capacity,
+            "durability": durability,
+            "flavor": flavor,
+            "texture": texture,
+            "calories": calories
+        }
+
+    return ingredients
 
 
 def debug_print(msg):
@@ -38,7 +61,7 @@ def main():
 
     # CODE REST OF PROBLEM MAINLOOP HERE
     data = parse_input(input_data) # Customize to problem
-
+    print(data)
 
 
 
