@@ -1,3 +1,8 @@
+"""
+This file is unchanged from the template.
+ChatGPT was able to solve with minimal modification.
+"""
+
 import argparse
 
 DEBUG = False
